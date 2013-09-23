@@ -81,9 +81,14 @@ class SprayTestSimulation extends Simulation {
              .check(status.is(401)))
          .exec(http("admin_2")
              .get("/admin")
-             .check(header(WWW_AUTHENTICATE).not("""Basic realm="Secured Resource""""))
+             .check(header(WWW_AUTHENTICATE).is("""Basic realm="Secured Resource""""))
              .basicAuth("toto", "titi")
              .check(status.is(401)))
+         .exec(http("admin_3")
+             .get("/admin")
+             .check(header(WWW_AUTHENTICATE).not("""Basic realm="Secured Resource""""))
+             .basicAuth("admin", "password")
+             .check(status.is(200)))
 
 	setUp(scn.inject(atOnce(1 user))).protocols(httpProtocol)
 }
